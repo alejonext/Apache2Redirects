@@ -1,0 +1,22 @@
+{
+  "name": "Apache2Redirects",
+  "version": "1.0.0",
+  "description": "Rediections Apache (httpd) in ExpressJS",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alejonext/Apache2Redirects.git"
+  },
+  "author": "AlejoNext",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alejonext/Apache2Redirects/issues"
+  },
+  "homepage": "https://github.com/alejonext/Apache2Redirects#readme",
+  "dependencies": {
+    "request": "^2.88.0"
+  }
+}
