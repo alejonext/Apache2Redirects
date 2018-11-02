@@ -10,8 +10,8 @@ Redirect 301 "/url/ bla " "/url/bla"
 Redirect 301 "/url/ foo" "/url/foo"
 Redirect 301 "/kool/bla-buu-space" "/kool/bla-buu"
 Redirect 301 "/kool/foo" "/kool/foo-el-recomendador"
-RedirectMatch 301 ^\/me-arriba\/moda(.*)?\/?$ estilo$&
-RedirectMatch 301 ^\/foo\/vamos-a-cine(.*)?\/?$ curiosidades$&
+RedirectMatch 301 ^\/me-url\/and(.*)?\/?$ /other/$1
+RedirectMatch 301 ^\/foo\/bar(.*)?\/?$ /go-to/$1
 Redirect 301 "/url/foo" "/url#foo"
 ```
 
