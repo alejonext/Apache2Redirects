@@ -27,6 +27,7 @@ const apache2 = require('Apache2Redirects')({
 var app = express();
 
 app.use(apache2.use);
+app.post('/redirect', (req, res) => res.json(req.Httpd(req.body.url)));
 ```
 
 ## Options
