@@ -1,5 +1,5 @@
 {
-  "name": "Apache2Redirects",
+  "name": "apache2redirects",
   "version": "1.0.0",
   "description": "Rediections Apache (httpd) in ExpressJS",
   "main": "index.js",
