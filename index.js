@@ -48,7 +48,7 @@ Apache2Redirects.prototype.use = function(req, res, next) {
 		}
 
     if(this.opts.useRedirect){
-      return res.redirect(ele.status, last);
+      return res.redirect(parseInt(ele.status), last);
     } else {
       return next({
         url : last,
