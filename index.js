@@ -58,6 +58,7 @@ Apache2Redirects.prototype.use = function(req, res, next) {
 	}
 
 	req.Httpd = ((url) => this.API(url));
+  req.Httpd.redirect = [ ...this.cases ];
 
 	next(this.opts.next);
 };
