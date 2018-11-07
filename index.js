@@ -23,6 +23,7 @@ function Apache2Redirects (opts) {
       <= new Date()),
 		flags : 'i',
     next : 'route',
+    internal : [],
     useRedirect : true,
 		...opts,
 	};
@@ -72,7 +73,7 @@ Apache2Redirects.prototype.getFile = function() {
 	return require('request')(this.opts.redirect, (err, response, body) => {
 		this._request = false;
 		if(!err){
-      this.cases = Apache2Redirects.parse(body);
+      this.cases = [ ...Apache2Redirects.parse(body), ...this.opts.internal ];
 			this.headers = response.headers;
 			this.headers.now = new Date(); // LocalTime
 		}
@@ -101,7 +102,7 @@ Apache2Redirects.prototype.getFile = function() {
  * @return {Object.to}         End path in raw
  */
 Apache2Redirects.prototype.API = function(url) {
-	if(!this._request && this.opts.check(this.headers)){
+	if(!this._request && ( this.opts.check(this.headers) || !this.cases.length ) ){
 		this.getFile();
 	}
 
