@@ -25,6 +25,7 @@ function Apache2Redirects (opts) {
     next : 'route',
     internal : [],
     useRedirect : true,
+    checkUrl : (e) => e,
 		...opts,
 	};
 
@@ -49,7 +50,7 @@ Apache2Redirects.prototype.use = function(req, res, next) {
 		}
 
     if(this.opts.useRedirect){
-      return res.redirect(parseInt(ele.status), last);
+      return res.redirect(parseInt(ele.status), this.opts.checkUrl(last));
     } else {
       return next({
         url : last,
