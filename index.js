@@ -1,3 +1,5 @@
+const path2Reg = require('path-to-regexp');
+
 /**
  *
  * var apache2 = require('Apache2Redirects');
@@ -17,16 +19,20 @@ function Apache2Redirects (opts) {
 	this.cases = [];
 	this.opts = {
 		redirect : '',
-		checkHeader : ((header) =>
-      ( +header.now ) +
-      ( parseInt(header.expires) * ( (/\.[0-9]{3}$/.test(header.expires) && 1000 ) || 1 ) )
-      <= new Date()),
 		flags : 'i',
     next : 'route',
     internal : [],
     useRedirect : true,
-    checkUrl : ((e) => e.replace(/\.(htm(l)|php)$/i, '')),
-		...opts,
+    check : {
+      header : ((header) =>
+        ( +header.now ) +
+        ( parseInt(header.expires) * ( (/\.[0-9]{3}$/.test(header.expires) && 1000 ) || 1 ) )
+        <= new Date()),
+      url : ((e) => e.replace(/\.(htm(l)|php)$/i, '')),
+      Redirect : ((e) => path2Reg(e.replace(/\.(htm(l)|php)$/i, '') + '(.html|.php|.htm)?').source),
+      RedirectMatch : ((e) => path2Reg( '/' + e).source ),
+    },
+		...opts
 	};
 
 	this.getFile();
@@ -64,7 +70,7 @@ Apache2Redirects.prototype.getFile = function() {
 	return require('request')(this.opts.redirect, (err, response, body) => {
 		this._request = false;
 		if(!err){
-      this.cases = [ ...Apache2Redirects.parse(body), ...this.opts.internal ];
+      this.cases = [ ...Apache2Redirects.parse(body, this.opts.check), ...this.opts.internal ];
 			this.headers = response.headers;
 			this.headers.now = new Date(); // LocalTime
 		}
@@ -94,25 +100,25 @@ Apache2Redirects.prototype.getFile = function() {
  * @return {Object.url}        Exec the expression regular
  */
 Apache2Redirects.prototype.API = function(url) {
-	if(!this._request && ( this.opts.checkHeader(this.headers) || !this.cases.length ) ){
+	if(!this._request && this.opts.check.header && ( this.opts.check.header(this.headers) || !this.cases.length ) ){
 		this.getFile();
 	}
 
-  let ele = this.cases.find(e => Apache2Redirects.RegExp(e, this.opts.flags).test(url));
+  let ele = this.cases.find(e => new RegExp(e.regexp, this.opts.flags).test(url));
 
   if(!ele){
     return ele;
   }
 
+  let last = url.replace(new RegExp(ele.regexp, this.opts.flags), ele.to);
 
-  let last = url.replace(Apache2Redirects.RegExp(ele, this.opts.flags), ele.to);
   if(last[0] != '/' && !/^http/.test(last)){
     last = '/' + last;
   }
 
   return {
     ...ele,
-    url : this.opts.checkUrl(last)
+    url : ( this.opts.check.url && this.opts.check.url(last) ) || last
   };
 };
 /**
@@ -120,7 +126,7 @@ Apache2Redirects.prototype.API = function(url) {
  * @param  {String} body The body of the file in raw (UTF-8)
  * @return {Array}       Array the redirections see the format in API
  */
-Apache2Redirects.parse = function(body) {
+Apache2Redirects.parse = function(body, opts) {
   let lines = body.split(Apache2Redirects.LINES);
   let cases = [];
 
@@ -136,6 +142,10 @@ Apache2Redirects.parse = function(body) {
         if(e){
           redirect = { ...e, ...redirect };
           if(Object.keys(redirect).length == Apache2Redirects.BODY_NUM ){
+            if(redirect.regexp && redirect.type && opts && opts[redirect.type]){
+              redirect.regexp = opts[redirect.type](redirect.regexp);
+            }
+
             break;
           }
 
@@ -152,27 +162,6 @@ Apache2Redirects.parse = function(body) {
   return cases
     .filter(e => Object.keys(e).length == Apache2Redirects.BODY_NUM );
 };
-/**
- * Create a RegExp
- * @param {Object} ele   [description]
- * @param {String} flags [description]
- */
-Apache2Redirects.RegExp = function(ele, flags) {
-  let reg = ele.regexp + '';
-
-  if(ele.type == 'Redirect'){
-    reg = '^' + ele.regexp;
-
-    if(/\.html$/.test(reg)){
-      reg = reg.replace('.html', '(\.html)?$');
-    } else {
-      reg = reg + '(\.html)?$';
-    }
-  }
-
-  return new RegExp(reg, flags);
-};
-
 /**
  * [joinValKey description]
  * @param  {Array|null} values  Is the match elements, is values

@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/alejonext/Apache2Redirects#readme",
   "dependencies": {
+    "path-to-regexp": "^0.1.7",
     "request": "^2.88.0"
   }
 }
