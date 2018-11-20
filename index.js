@@ -98,14 +98,14 @@ Apache2Redirects.prototype.API = function(url) {
 		this.getFile();
 	}
 
-  let ele = this.cases.find(e => ( new RegExp(e.regexp, this.opts.flags) ).test(url));
+  let ele = this.cases.find(e => Apache2Redirects.RegExp(e.regexp, this.opts.flags).test(url));
 
   if(!ele){
     return ele;
   }
 
 
-  let last = url.replace(new RegExp(ele.regexp, this.opts.flags), ele.to);
+  let last = url.replace(Apache2Redirects.RegExp(ele.regexp, this.opts.flags), ele.to);
   if(last[0] != '/' && !/^http/.test(last)){
     last = '/' + last;
   }
@@ -151,6 +151,20 @@ Apache2Redirects.parse = function(body) {
 
   return cases
     .filter(e => Object.keys(e).length == Apache2Redirects.BODY_NUM );
+};
+/**
+ * Create a RegExp
+ * @param {Object} ele   [description]
+ * @param {String} flags [description]
+ */
+Apache2Redirects.RegExp = function(ele, flags) {
+  let reg = ele.regexp + '';
+
+  if(ele.type == 'Redirect'){
+    reg = '^' + ele.regexp + '$';
+  }
+
+  return new RegExp(reg, flags);
 };
 
 /**
