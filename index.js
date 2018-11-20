@@ -161,7 +161,7 @@ Apache2Redirects.RegExp = function(ele, flags) {
   let reg = ele.regexp + '';
 
   if(ele.type == 'Redirect'){
-    reg = '^' + ele.regexp + '$';
+    reg = '^' + ele.regexp + '(\.html)?$';
   }
 
   return new RegExp(reg, flags);
