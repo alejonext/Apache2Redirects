@@ -98,14 +98,14 @@ Apache2Redirects.prototype.API = function(url) {
 		this.getFile();
 	}
 
-  let ele = this.cases.find(e => Apache2Redirects.RegExp(e.regexp, this.opts.flags).test(url));
+  let ele = this.cases.find(e => Apache2Redirects.RegExp(e, this.opts.flags).test(url));
 
   if(!ele){
     return ele;
   }
 
 
-  let last = url.replace(Apache2Redirects.RegExp(ele.regexp, this.opts.flags), ele.to);
+  let last = url.replace(Apache2Redirects.RegExp(ele, this.opts.flags), ele.to);
   if(last[0] != '/' && !/^http/.test(last)){
     last = '/' + last;
   }
