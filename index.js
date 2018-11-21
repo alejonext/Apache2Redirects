@@ -30,7 +30,7 @@ function Apache2Redirects (opts) {
         <= new Date()),
       url : ((e) => e.replace(/\.(htm(l)|php)$/i, '')),
       Redirect : ((e) => path2Reg(e.replace(/\.(htm(l)|php)$/i, '') + '(.html|.php|.htm)?').source),
-      RedirectMatch : ((e) => path2Reg( '/' + e).source ),
+      RedirectMatch : ((e) =>  e ),
     },
 		...opts
 	};
@@ -104,7 +104,7 @@ Apache2Redirects.prototype.API = function(url) {
 		this.getFile();
 	}
 
-  let ele = this.cases.find(e => new RegExp(e.regexp, this.opts.flags).test(url));
+  let   = this.cases.find(e => new RegExp(e.regexp, this.opts.flags).test(url));
 
   if(!ele){
     return ele;
