@@ -104,7 +104,7 @@ Apache2Redirects.prototype.API = function(url) {
 		this.getFile();
 	}
 
-  let   = this.cases.find(e => new RegExp(e.regexp, this.opts.flags).test(url));
+  let ele  = this.cases.find(e => new RegExp(e.regexp, this.opts.flags).test(url));
 
   if(!ele){
     return ele;
