@@ -20,8 +20,18 @@ In Expressjs
 ```js
 const express = require('express');
 const apache2 = require('Apache2Redirects')({
-  // the file
-  redirect : 'http://apache2.kool/redirect' 
+  source : {
+    // URL
+    http : 'http://apache2.kool/redirect',
+    //File system
+    file : '../apache2/redirect.conf',
+    // Internal
+    internal : [{
+      regexp : "/my-kool-rediection",
+      to : "/end-redirection", 
+      status : '301'
+    }]
+  }
 });
 
 var app = express();
@@ -32,10 +42,10 @@ app.post('/redirect', (req, res) => res.json(req.Httpd(req.body.url)));
 
 ## Options
 
-* `redirect`: Is a URL, the redirections
+* `source`: Is a `object` with url or elements to redirect
 * `flags` : Is flags in RegExp
 * `next` : Is the result when is NOT in file redirections
 * `useRedirect` : Use `res.redirect` the expressjs
-* `check` : Is a function, is return a Boolean, and arguments is the Headers of the file.
+* `check` : Is a functions, is return a Boolean, and arguments is the Headers of the file.
 
 That's all!!
